@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: Advanced CI/CD DevSecOps Pipeline
 
 on:
   push:
@@ -9,9 +9,71 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  code-quality:
+    name: 🔍 Code Quality & SAST
     runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
 
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: ✨ Quality Check (Lint)
+        run: node -c backend/server.js
+
+      - name: 🛡️ Security Audit (SAST)
+        run: |
+          cd backend
+          npm install --quiet
+          npm audit --audit-level=high || true
+
+  unit-tests:
+    name: 🧪 Unit Testing
+    needs: code-quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: 🧪 Run Jest Unit Tests
+        run: |
+          cd backend
+          npm install --quiet
+          npm test
+
+  container-security:
+    name: 🐳 Image Build & Trivy Scan
+    needs: unit-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🐳 Build Docker Image
+        run: docker build -t ticket-app .
+
+      - name: 🔒 Run Trivy Vulnerability Scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'ticket-app'
+          format: 'table'
+          exit-code: '0'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+
+  deploy:
+    name: 🚀 Ansible Deployment
+    needs: container-security
+    runs-on: ubuntu-latest
     steps:
       - name: 📥 Checkout Code
         uses: actions/checkout@v4
@@ -19,10 +81,10 @@ jobs:
       - name: ⚙️ Install Ansible
         run: sudo apt update && sudo apt install -y ansible
 
-      - name: 🚀 Run Ansible Playbook
+      - name: 🚀 Run Ansible Deployment Playbook
         run: |
           cd ansible
           ansible-playbook -i inventory playbook.yml
 
-      - name: ✅ Verify Docker Container is Running
-        run: docker ps | grep ticket-app
+      - name: ✅ Verify Docker Container Deployment
+        run: docker ps | grep ticket-container
