@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Ticket Vault - Premium Resale</title>
+    <!-- Modern Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Abstract Background Elements for Premium Look -->
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
+
+    <header>
+        <nav class="container navbar">
+            <div class="logo">
+                <i class="fa-solid fa-ticket-simple"></i> Vault<span>Tickets</span>
+            </div>
+            <div class="nav-links">
+                <a href="#available-tickets">Marketplace</a>
+                <a href="#sell-ticket" class="btn btn-outline">Sell Ticket</a>
+            </div>
+        </nav>
+        
+        <div class="hero container">
+            <div class="hero-content">
+                <h1>Secure, Fast, and Seamless Ticket Resale.</h1>
+                <p>Unlock access to sold-out events or seamlessly liquidate your extra passes on the most trusted ticket block-marketplace.</p>
+                <div class="hero-actions">
+                    <a href="#available-tickets" class="btn btn-primary">Browse Tickets <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="glass-orb">
+                    <i class="fa-solid fa-earth-americas"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <!-- Marketplace / Available Tickets -->
+        <section id="available-tickets" class="section">
+            <div class="section-header">
+                <h2>🎫 Active Marketplace</h2>
+                <p>Discover previously listed and available tickets right now.</p>
+            </div>
+            
+            <div id="ticketsList" class="ticket-grid">
+                <!-- Data loaded via app.js -->
+                <div class="loading-state">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i> Loading marketplace data...
+                </div>
+            </div>
+        </section>
+
+        <!-- Sell Ticket Section (Glassmorphism Form) -->
+        <section id="sell-ticket" class="section">
+            <div class="sell-container glass-panel">
+                <div class="sell-info">
+                    <h2>Got an extra ticket?</h2>
+                    <p>List it securely on our platform. Our intelligent matching system ensures your ticket finds the right buyer with zero hassle.</p>
+                    <ul class="features-list">
+                        <li><i class="fa-solid fa-check-circle"></i> Instant listing visibility</li>
+                        <li><i class="fa-solid fa-check-circle"></i> Secure platform guarantee</li>
+                        <li><i class="fa-solid fa-check-circle"></i> Zero hidden middleman fees</li>
+                    </ul>
+                </div>
+                
+                <div class="sell-form-wrapper">
+                    <h3>List Your Ticket</h3>
+                    <form id="resellForm">
+                        <div class="form-row">
+                            <div class="form-control">
+                                <label for="sellerName">Your Full Name</label>
+                                <div class="input-icon">
+                                    <i class="fa-regular fa-user"></i>
+                                    <input type="text" id="sellerName" placeholder="e.g. John Doe" required>
+                                </div>
+                            </div>
+                            <div class="form-control">
+                                <label for="eventName">Event Name</label>
+                                <div class="input-icon">
+                                    <i class="fa-solid fa-music"></i>
+                                    <input type="text" id="eventName" placeholder="e.g. Taylor Swift Eras Tour" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-control">
+                                <label for="eventDate">Event Date</label>
+                                <div class="input-icon">
+                                    <i class="fa-regular fa-calendar"></i>
+                                    <input type="date" id="eventDate" required>
+                                </div>
+                            </div>
+                            <div class="form-control">
+                                <label for="location">Location / Venue</label>
+                                <div class="input-icon">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                    <input type="text" id="location" placeholder="e.g. Madison Square Garden">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-control">
+                                <label for="ticketType">Ticket Tier / Type</label>
+                                <div class="input-icon">
+                                    <i class="fa-solid fa-layer-group"></i>
+                                    <select id="ticketType">
+                                        <option value="General Admission">General Admission</option>
+                                        <option value="VIP Standing">VIP Standing</option>
+                                        <option value="Seated Area">Seated Area</option>
+                                        <option value="Backstage Pass">Backstage Pass</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-control">
+                                <label for="price">Resale Price (₹/USD)</label>
+                                <div class="input-icon">
+                                    <i class="fa-solid fa-tag"></i>
+                                    <input type="number" id="price" placeholder="e.g. 5000" required min="1">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-submit" id="submitResellBtn">
+                            Publish Listing <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="logo">
+                <i class="fa-solid fa-ticket-simple"></i> Vault<span>Tickets</span>
+            </div>
+            <p>&copy; 2024 VaultTickets Inc. Built for SIH. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden">
+        <span id="toast-icon"></span>
+        <span id="toast-message">Notification message here</span>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
