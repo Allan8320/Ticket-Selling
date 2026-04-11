@@ -1,0 +1,28 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Install Ansible
+        run: sudo apt update && sudo apt install -y ansible
+
+      - name: 🚀 Run Ansible Playbook
+        run: |
+          cd ansible
+          ansible-playbook -i inventory playbook.yml
+
+      - name: ✅ Verify Docker Container is Running
+        run: docker ps | grep ticket-app
