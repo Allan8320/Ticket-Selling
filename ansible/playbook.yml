@@ -1,24 +1,22 @@
----
-- name: Deploy Smart Ticket Booking System Locally
-  hosts: local
-  become: false  # Depending on your local OS setup, you might need become: true (sudo)
+- name: Deploy Smart Ticket App
+  hosts: localhost
+  gather_facts: no
 
   tasks:
-    - name: Ensure Node.js and npm are present (Simulated)
-      debug:
-        msg: "Checking if Node.js and npm are installed. (Please ensure they are installed in Windows/WSL)"
 
-    - name: Ensure Docker is present (Simulated)
-      debug:
-        msg: "Checking if Docker is installed. (Please ensure Docker Desktop is running)"
+    - name: Stop old container
+      shell: docker rm -f ticket-container || true
 
-    - name: Start the Docker container
-      shell: "docker-compose up -d"
-      args:
-        chdir: "../"  # Runs this from the main smart-ticket-system directory
-      ignore_errors: yes  # Ignored if you don't have python-docker package locally
-      register: docker_output
+    - name: Build Docker Image
+      shell: docker build -t ticket-app ..
 
-    - name: Display Container Startup Status
+    - name: Run Docker Container
+      shell: docker run -d -p 3002:3000 --name ticket-container ticket-app
+
+    - name: Show Running Containers
+      shell: docker ps
+      register: output
+
+    - name: Print Output
       debug:
-        msg: "Docker container started: {{ docker_output.stdout }}"
+        var: output.stdout_lines
