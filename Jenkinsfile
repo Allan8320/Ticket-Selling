@@ -2,66 +2,51 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS_ID = 'docker-hub-credentials' // You need to set this up in Jenkins
-        DOCKER_IMAGE = 'allanpaul/smart-ticket-app'
-        DOCKER_TAG = 'latest'
+        // Automatically inject Docker Hub credentials stored in Jenkins
+        DOCKER_HUB_CREDENTIALS_ID = 'docker-hub-credentials' 
     }
 
     stages {
-        stage('Clone Repository') {
+        stage('Clone') {
             steps {
-                // In a real scenario, this would point to your Git repo.
-                // Assuming Jenkins is scanning the repo directly:
-                echo 'Cloning the Smart Ticket Repository...'
-                checkout scm
+                // Pointing to your specific GitHub repository
+                git 'https://github.com/Allan8320/Ticket-Selling.git'
             }
         }
 
-        stage('Install Dependencies & Test') {
+        stage('Install') {
             steps {
-                dir('backend') {
-                    echo 'Installing Backend Node.js Dependencies...'
-                    // We mock standard tests here
-                    sh 'npm install'
-                    echo 'Running tests... (MOCK)'
-                }
+                // Ensure dependencies are installed
+                sh 'cd backend && npm install'
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build Docker') {
             steps {
-                echo 'Building Docker Image...'
-                // Build complete frontend/backend docker image
-                sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
+                // Build the image locally in the Jenkins worker
+                sh 'docker build -t ticket-app .'
             }
         }
 
-        stage('Push to Docker Hub') {
+        stage('Push Docker') {
             steps {
-                echo 'Pushing image to Docker Hub...'
+                // Securely login to Docker hub using the Jenkins Credentials
                 withCredentials([usernamePassword(credentialsId: DOCKER_HUB_CREDENTIALS_ID, passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
                     sh "echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin"
-                    sh "docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
+                    
+                    // Tag and push as your user 'allanpaul'
+                    sh 'docker tag ticket-app allanpaul/smart-ticket-app:latest'
+                    sh 'docker push allanpaul/smart-ticket-app:latest'
                 }
             }
         }
 
-        stage('Deploy to Kubernetes') {
+        stage('Deploy to K8s') {
             steps {
-                echo 'Deploying to Local Kubernetes Cluster...'
-                // Apply K8s configuration. Requires kubectl configured in Jenkins
-                sh "kubectl apply -f k8s/deployment.yaml"
-                sh "kubectl apply -f k8s/service.yaml"
+                // Apply the deployment configurations from the 'k8s' folder
+                sh 'kubectl apply -f k8s/deployment.yaml'
+                sh 'kubectl apply -f k8s/service.yaml'
             }
-        }
-    }
-
-    post {
-        success {
-            echo 'Pipeline executed successfully! Smart Ticket App is Live!'
-        }
-        failure {
-            echo 'Pipeline execution failed. Please check the logs.'
         }
     }
 }
