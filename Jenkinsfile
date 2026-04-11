@@ -7,12 +7,6 @@ pipeline {
 
     stages {
 
-        stage('Install') {
-            steps {
-                sh 'cd backend && npm install'
-            }
-        }
-
         stage('Build Docker') {
             steps {
                 sh 'docker build -t ticket-app .'
