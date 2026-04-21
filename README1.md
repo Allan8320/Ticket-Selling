@@ -1,11 +1,5 @@
-# 🚀 End Semester Practical – DevOps Lab
 
-**Department of Computer Science & Engineering**
-**Karunya Institute of Technology and Sciences**
-
----
-
-## 📌 Lab Setup Requirements
+##  Lab Setup Requirements
 
 * Git
 * Python 3.11+
@@ -18,7 +12,7 @@
 
 ---
 
-# 🧪 Q1: Git Operations & Pull Request
+#  Q1: Git Operations & Pull Request
 
 ## Initialize Repository
 
@@ -48,7 +42,7 @@ git remote add origin https://github.com/<username>/myproject.git
 git push -u origin feature/hello
 ```
 
-➡️ Go to GitHub → Create Pull Request → Merge
+ Go to GitHub → Create Pull Request → Merge
 
 ## Merge Branch
 
